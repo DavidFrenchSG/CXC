@@ -68,10 +68,10 @@ dev.set(dev.next())
 require(psych)
 da <- GC %>% select(cluster, fa_aaua, op_ha, vc_ha, gm_ha, nm_ha,fbi_ha,slr_ha,sck_glu, sd_glu, sd_dc,lspec,feed_lu,homefeed_per,cspec,ifert_ha,arable_ha, fodder_ha,grass_ha,rough_grazing_ha, wood_aua_p,fwood_aua_p,nue, farm_n_surplus, dsecxx613,dseczz612,outputinputlesssubsratio, fo_kg_ha,netem_ha, ghg_ha, tde_ha, tie_ha, tch4_ha,tn20_ha)
 t <- describe(da)
-write.csv(t, file="GC_cluster_table2a.csv")
+write.csv(t, file="CSV_Output/GC_cluster_table2a.csv")
 tt <- describeBy(da, da$cluster)
 tt2<-do.call("rbind",tt)  
-write.csv(tt2, file="GC_cluster_table2b.csv")
+write.csv(tt2, file="CSV_Output/GC_cluster_table2b.csv")
 
 # As numbers are small we run a non-parametric test of association
 
@@ -121,10 +121,10 @@ y3 <- kruskal.test(tch4_ha ~ cluster, data = GC)# GHG Indicator
 y4 <- kruskal.test(tn20_ha ~ cluster, data = GC)# GHG Indicator
 
 df <- cbind(a,b,c,d,e,f,g,h,i,j,k,kf,kl,l,lf,m,n,o,p,q,r,s,t,u,v,w,x,y,yg,y1,y2,y3,y4)
-write.csv(df, file="gc_cluster_KW.csv")
+write.csv(df, file="CSV_Output/gc_cluster_KW.csv")
 
 ##save the file for further analysis```
-write.csv(GC, file="GC_All_Clustered.csv")
+write.csv(GC, file="CSV_Output/GC_All_Clustered.csv")
 
 #Main NUE Indicators
 
@@ -143,5 +143,5 @@ ggplot(GC, aes(x=ghg_ha, y=nue_p, size = fa_aaua)) +
   scale_size(range = c(0.1, 5), name="Adjusted Area")
 ggsave("GC_nue_ghg.png",path="Figures") 
 
-write.csv(GC, file="GC_All_Clustered.csv")
+write.csv(GC, file="CSV_Output/GC_All_Clustered.csv")
 

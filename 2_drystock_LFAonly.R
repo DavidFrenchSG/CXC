@@ -71,11 +71,11 @@ dev.set(dev.next())
 require(psych)
 da <- ALLLFA %>% select(cluster, fa_aaua, op_ha, vc_ha, gm_ha, nm_ha,fbi_ha,slr_ha,sck_glu, sd_glu, sd_dc,lspec,feed_lu,homefeed_per,cspec,ifert_ha,arable_ha, fodder_ha,grass_ha,rough_grazing_ha, wood_aua_p,fwood_aua_p,nue, farm_n_surplus, dsecxx613,dseczz612,outputinputlesssubsratio, fo_kg_ha,netem_ha,ghg_ha, tde_ha, tie_ha, tch4_ha,tn20_ha)
 t <- describe(da)
-write.csv(t, file="ALLLFA_cluster_table2a.csv")
+write.csv(t, file="CSV_Output/ALLLFA_cluster_table2a.csv")
 tt <- describeBy(da, da$cluster)
 ##ignore warning message
 tt2<-do.call("rbind",tt)  
-write.csv(tt2, file="ALLLFA_cluster_table2b.csv")
+write.csv(tt2, file="CSV_Output/ALLLFA_cluster_table2b.csv")
 
 a <- kruskal.test(fa_aaua ~ cluster, data = ALLLFA) #area						
 b <- kruskal.test(op_ha ~ cluster, data = ALLLFA) # financial						
@@ -118,17 +118,17 @@ y4 <- kruskal.test(tn20_ha ~ cluster, data = ALLLFA)# GHG Indicator
 
 
 df <- cbind(a,b,c,d,e,f,g,h,i,j,k,kf,kl,l,lf,m,n,o,p,q,r,s,t,u,v,w,x,y,yg,y1,y2,y3,y4)
-write.csv(df, file="ALLLFA_cluster_table2_KW.csv")
+write.csv(df, file="CSV_Output/ALLLFA_cluster_table2_KW.csv")
 
 ##write file with cluster solutions for further analysis
-write.csv(ALLCS, file="ALLLFA_All_Clustered.csv")
+write.csv(ALLCS, file="CSV_Output/ALLLFA_All_Clustered.csv")
 
 ##additional exploring to explain clusters/outliers
 da <- ALLLFA %>% select(cluster,n_cattle,n_sheep,n_sheep,n_milk, n_wholecrop,nue_p, nsurplus_p_ha )
 tt <- describeBy(da, da$cluster)
 tt
 tt2<-do.call("rbind",tt)  
-write.csv(tt2, file="ALLLFA_cluster_otherindicators.csv")
+write.csv(tt2, file="CSV_Output/ALLLFA_cluster_otherindicators.csv")
 table(ALLLFA$type, ALLLFA$cluster)
 
 # a p value <0.05 means there is a significant difference between practices

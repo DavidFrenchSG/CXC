@@ -12,8 +12,8 @@
 ##Manual inputs
 Curr_year <- 2020 # This is the *crop year* being studied
 Prev_year <- Curr_year-1  # Calculates previous year for QA analysis
-Carbon_audit_dataset_name <- "CA_test_dataset.csv" # Change to name of input dataset from carbon audit
-NUE_dataset_name <- "NUE_test_dataset.csv" # Change to name of input dataset from nitrogen use efficiency
+Carbon_audit_dataset_location <- "CSV_Input/CA_test_dataset.csv" # Change to name of input dataset from carbon audit
+NUE_dataset_location <- "CSV_Input/NUE_test_dataset.csv" # Change to name of input dataset from nitrogen use efficiency
 
 
 # Imported data as csv into stata - use strict binding and all variables set to lower case
@@ -38,10 +38,10 @@ library(ade4) #  used to show cluster plots
 
 #names(CA)
 #DF - testing creating Input dataset
-CA_test <- read.csv(Carbon_audit_dataset_name)
+CA_test <- read.csv(Carbon_audit_dataset_location)
 colnames(CA_test) <- gsub(" ","",colnames(CA_test))
 colnames(CA_test) <- gsub("\\.","",colnames(CA_test))
-NUE_test <-read.csv(NUE_dataset_name)
+NUE_test <-read.csv(NUE_dataset_location)
 colnames(NUE_test) <- gsub(" ","",colnames(NUE_test))
 colnames(NUE_test) <- gsub("\\.","",colnames(NUE_test))
 NUE_test <- NUE_test %>% 
