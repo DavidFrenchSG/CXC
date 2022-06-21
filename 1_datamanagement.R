@@ -231,7 +231,7 @@ p <-ggplot(CA, aes(x=fo_kg_ha, y=ghg_ha, col=Type)) +
   theme_bw() +
   scale_size(range = c(0, 5), name="Farm Type")
 p + xlab("Product (kg/ha)") + ylab("Gross emissions (co2eq.kg/ha)")    
-ggsave("Figure_1_total_ghg_scatter.png")  
+ggsave("Figure_1_total_ghg_scatter.png",path="Figures")  
 
 #Figure 2(GHG Boxplots by farm typey and by HA ```
 p <- ggplot(CA, aes(x=Type, y=ghg_ha, fill=Type)) +
@@ -239,7 +239,7 @@ p <- ggplot(CA, aes(x=Type, y=ghg_ha, fill=Type)) +
   theme_bw() + 
   ylab("Gross emissions (co2eq.kg/ha)")    
 p
-ggsave("Figure_2_total_ghgha.png")
+ggsave("Figure_2_total_ghgha.png",path="Figures")
 
 #Figure 2b(GHG TOTAL Boxplots by farm type farm environmental indicators```
 p <- ggplot(CA, aes(x=Type, y=ghg_CO2e, fill=Type)) +
@@ -248,7 +248,7 @@ p <- ggplot(CA, aes(x=Type, y=ghg_CO2e, fill=Type)) +
   theme_bw() + 
   scale_y_continuous(name="Gross emissions (co2eq.kg)", labels = scales::comma)
 p
-ggsave("Figure_2b_total_ghg.png")
+ggsave("Figure_2b_total_ghg.png",path="Figures")
 
 ##DF - trying to recreate bar chart of emissions types by farmtype, in R
 

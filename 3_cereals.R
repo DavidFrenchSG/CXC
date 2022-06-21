@@ -8,13 +8,13 @@ p <- ggplot(C, aes(x=fo_kg_ha, y=ghg_ha, size=arable_ha, colour=crop_specialisat
   theme_bw() + 
   scale_size(range = c(0.1, 5), name="Arable Area (Prop.)")
 p + xlab("Product (kg/ha)") + ylab("Gross emissions (co2eq kg/ha)")
-ggsave("cer_kg_ghg_scatter.png")  
+ggsave("cer_kg_ghg_scatter.png",path="Figures")  
 
 p <- ggplot(C, aes(x=farm_n_surplus, y=ghg_ha, size = arable_ha)) +
   geom_point(color='darkslategrey', alpha=0.6) + 
   scale_size(range = c(0.1, 5), name="Arable/total area")
 p + xlab("Product (kg/ha)") + ylab("Farm N surplus (kg)")
-ggsave("cer_nsurplus_ghg_scatter.png") 
+ggsave("cer_nsurplus_ghg_scatter.png",path="Figures") 
 
 
 par(mfrow=c(1,1))
@@ -29,12 +29,12 @@ kmeansRes<-factor(km$cluster)
 km$centers
 km$size
 s.class(df2,fac=kmeansRes, add.plot=TRUE, col=c("blue","green","purple","red"))  #should print out the clustergram
-ggsave("C_clusterplot_3.png")
+ggsave("C_clusterplot_3.png",path="Figures")
 
 C$cluster <- km$cluster
 table(C$cluster)
 
-png("C_clusterbyghg.png")
+png("Figures/C_clusterbyghg.png")
 par(mfrow=c(1,4))
 boxplot(tde_ha~cluster,data=C, main="Direct/Ha",
         col=(c("darkslategrey")),
@@ -51,7 +51,7 @@ boxplot(tn20_ha~cluster,data=C, main="NOx/Ha",
 dev.off()
 dev.off()
 
-png("C_cluster_box.png")
+png("Figures/C_cluster_box.png")
 par(mfrow=c(1,2))
 boxplot(ghg_ha~cluster,data=C, main="Gross emissions/Ha",
         col=(c("darkslategrey")),
@@ -135,23 +135,23 @@ write.csv(C, file="C_All_Clustered.csv")
 ggplot(C, aes(x=fo_kg_ha, y=nue_p, size = fa_aaua, color=fa_orgpc)) +
   geom_point(alpha=0.5) + 
   scale_size(range = c(0.1, 5), name="Adjusted Area")
-ggsave("C_nue_product.png")  
+ggsave("C_nue_product.png",path="Figures")  
 
 ggplot(C, aes(x=op_ha, y=nue_p, size = fa_aaua)) +
   geom_point(alpha=0.5) + 
   scale_size(range = c(0.1, 5), name="Adjusted Area")
-ggsave("C_nue_opprof.png") 
+ggsave("C_nue_opprof.png",path="Figures") 
 
 ggplot(C, aes(x=ghg_ha, y=nue_p, size = fa_aaua)) +
   geom_point(alpha=0.5) + 
   scale_size(range = c(0.1, 5), name="Adjusted Area")
 
-ggsave("C_nue_ghg.png") 
+ggsave("C_nue_ghg.png",path="Figures") 
 
 ggplot(C, aes(x=farm_n_surplus, y=ghg_ha, size = fa_aaua)) +
   geom_point(alpha=0.5) + 
   scale_size(range = c(0.1, 5), name="Adjusted Area")
-ggsave("C_nue_ghg_nsurplus.png")
+ggsave("C_nue_ghg_nsurplus.png",path="Figures")
 
 
 write.csv(C, file="C_All_Clustered.csv")

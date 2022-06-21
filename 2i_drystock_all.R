@@ -7,7 +7,7 @@ p <-ggplot(ALLCS, aes(x=fo_kg_ha, y=ghg_ha, size=fa_glu, col=type)) +
   theme(legend.title=element_blank())+
   scale_size(range = c(0.1, 5), name="Livestock Units")
 p + xlab("Product (kg/ha)") + ylab("Gross emissions (co2eq kg/ha)")
-ggsave("allcs_kg_ghg_scatter.png") 
+ggsave("allcs_kg_ghg_scatter.png",path="Figures") 
 
 par(mfrow=c(1,1))  
 ALLCS$s_ghgha <- scale(ALLCS$ghg_ha) # standardize variables
@@ -20,12 +20,12 @@ kmeansRes<-factor(km$cluster)
 km$centers
 km$size
 s.class(df2,fac=kmeansRes, add.plot=TRUE, col=c("blue","coral4","purple","red","black"))  
-ggsave("ALLCS_clusterplot.png")
+ggsave("ALLCS_clusterplot.png",path="Figures")
 
 ALLCS$cluster <- km$cluster
 table(ALLCS$cluster)
 
-png("ALLCS_clusterbyghg.png")
+png("Figures/ALLCS_clusterbyghg.png")
 par(mfrow=c(1,4))
 boxplot(tde_ha~cluster,data=ALLCS, main="Direct/Ha",
         col=(c("darkslategrey")),
@@ -43,7 +43,7 @@ dev.off()
 dev.off()
 
 
-png("ALCS_cluster_box.png")
+png("Figures/ALCS_cluster_box.png")
 par(mfrow=c(1,2))
 boxplot(ghg_ha~cluster,data=ALLCS, main="Gross emissions/Ha",
         col=(c("darkslategrey")),
@@ -125,17 +125,17 @@ table(ALLCS$type, ALLCS$cluster)
 ggplot(ALLCS, aes(x=fo_kg_ha, y=nue_p, size = fa_glu)) +
   geom_point(alpha=0.5) + 
   scale_size(range = c(0.1, 5), name="Number of Livestock Units")
-ggsave("ALLCS_nue_product.png")  
+ggsave("ALLCS_nue_product.png",path="Figures")  
 
 ggplot(ALLCS, aes(x=ghg_ha, y=nue_p, size = fa_glu)) +
   geom_point(alpha=0.5) + 
   scale_size(range = c(0.1, 5), name="Number of Livestock Units")
-ggsave("ALLCS_nue_ghg.png") 
+ggsave("ALLCS_nue_ghg.png",path="Figures") 
 
 ggplot(ALLCS, aes(x=farm_n_surplus, y=ghg_ha, size = fa_glu)) +
   geom_point(alpha=0.5) + 
   scale_size(range = c(0.1, 5), name="Number of Livestock Units")
-ggsave("ALLCS_nue_ghg_nsurplus.png")
+ggsave("ALLCS_nue_ghg_nsurplus.png",path="Figures")
 
 
 

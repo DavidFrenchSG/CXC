@@ -6,7 +6,7 @@ p <-ggplot(D, aes(x=fo_kg_ha, y=ghg_ha, size = ndc)) +
   theme_bw() + 
   scale_size(range = c(0.1, 5), name="Dairy Cows")
 p + xlab("Product (kg/ha)") + ylab("Gross emissions (co2eq kg/ha)")
-ggsave("d_kg_ghg_scatter.png") 
+ggsave("d_kg_ghg_scatter.png",path="Figures") 
 
 summary(D$ghg_ha)
 summary(D$fo_kg_ha)
@@ -24,7 +24,7 @@ km$centers
 km$size
 s.class(df2,fac=kmeansRes, add.plot=TRUE, col=rainbow(nlevels(kmeansRes)))  #should print out the clustergram
 
-ggsave("D_clusterplot.png")
+ggsave("D_clusterplot.png",path="Figures")
 
 D$cluster <- km$cluster
 D$Cluster <- as.factor(D$cluster)
@@ -35,11 +35,11 @@ p <-ggplot(D, aes(x=fo_kg_ha, y=ghg_ha, size=ndc, col = Cluster)) +
   theme_bw() + 
   scale_size(range = c(0.1, 5), name="Dairy Cows")
 p + xlab("Product (kg/ha)") + ylab("Gross emissions (co2eq kg/ha)")
-ggsave("d_kg_ghg_scatter_clust.png") 
+ggsave("d_kg_ghg_scatter_clust.png",path="Figures") 
 
 table(D$cluster)
 
-png("D_clusterbyghg.png")
+png("Figures/D_clusterbyghg.png")
 par(mfrow=c(1,4))
 boxplot(tde_ha~cluster,data=D, main="Direct/Ha",
         col=(c("darkslategrey")),
@@ -56,7 +56,7 @@ boxplot(tn20_ha~cluster,data=D, main="NOx/Ha",
 dev.off()
 dev.off()
 
-png("D_cluster_box.png")
+png("Figures/D_cluster_box.png")
 par(mfrow=c(1,2))
 boxplot(ghg_ha~cluster,data=D, main="Gross emissions/Ha",
         col=(c("darkslategrey")),
@@ -139,25 +139,25 @@ write.csv(D, file="D_All_Clustered.csv")
 ggplot(D, aes(x=fo_kg_ha, y=nue_p, size = ndc)) +
   geom_point(alpha=0.5) + 
   scale_size(range = c(0.1, 5), name="Number of Dairy Cows")
-ggsave("D_nue_product.png")  
+ggsave("D_nue_product.png",path="Figures")  
 
 ggplot(D, aes(x=op_ha, y=nue_p, size = ndc)) +
   geom_point(alpha=0.5) + 
   scale_size(range = c(0.1, 5), name="Number of Dairy Cows")
-ggsave("D_nue_opprof.png") 
+ggsave("D_nue_opprof.png",path="Figures") 
 
 
 ggplot(D, aes(x=nue_p, y=ghg_ha, size = ndc)) +
   geom_point(alpha=0.5) + 
   stat_smooth(method=lm) +
   scale_size(range = c(0.1, 5), name="Number of Dairy Cows")
-ggsave("D_nue_ghg.png") 
+ggsave("D_nue_ghg.png",path="Figures") 
 
 ggplot(D, aes(x=farm_n_surplus, y=ghg_ha, size = ndc)) +
   geom_point(alpha=0.5) + 
   stat_smooth(method=lm) +
   scale_size(range = c(0.1, 5), name="Number of Dairy Cows")
-ggsave("D_nue_ghg_nsurplus.png")
+ggsave("D_nue_ghg_nsurplus.png",path="Figures")
 
 write.csv(D, file="Dairy_All_Clustered.csv")
 

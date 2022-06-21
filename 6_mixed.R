@@ -8,14 +8,14 @@ p <- ggplot(M, aes(x=fo_kg_ha, y=ghg_ha, size=fa_aaua, colour=crop_specialisatio
   theme_bw() + 
   scale_size(range = c(0.1, 5), name="Adj.Area (ha)")
 p + xlab("Product (kg/ha)") + ylab("Gross emissions (co2eq kg/ha)")    
-ggsave("m_total_ghg.png")  
+ggsave("m_total_ghg.png",path="Figures")  
 
 
 p <- ggplot(M, aes(x=farm_n_surplus, y=ghg_ha, size = arable_ha)) +
   geom_point(color='darkslategrey', alpha=0.6) + 
   scale_size(range = c(0.1, 4), name="Arable/total area")
 p + xlab("Product (kg/ha)") + ylab("Farm N surplus (kg)")
-ggsave("M_nsurplus_ghg_scatter.png") 
+ggsave("M_nsurplus_ghg_scatter.png",path="Figures") 
 
 
 summary(M$fo_kg_ha)
@@ -33,11 +33,11 @@ kmeansRes<-factor(km$cluster)
 km$centers
 km$size
 s.class(df2,fac=kmeansRes, add.plot=TRUE, col=c("blue","black","green","red"))  #should print out the clustergram
-ggsave("M_clusterplot.png")
+ggsave("M_clusterplot.png",path="Figures")
 Mi$cluster <- km$cluster
 table(Mi$cluster)
 
-png("M_clusterbyghg.png")
+png("Figures/M_clusterbyghg.png")
 par(mfrow=c(1,4))
 boxplot(tde_ha~cluster,data=Mi, main="Direct/Ha",
         col=(c("darkslategrey")),
@@ -60,7 +60,7 @@ dev.off()
 
 #group the boxplots by types```
 
-png("M_cluster_box.png")
+png("Figures/M_cluster_box.png")
 par(mfrow=c(1,2))
 boxplot(ghg_ha~cluster,data=Mi, main="Gross emissions/Ha",
         col=(c("darkslategrey")),

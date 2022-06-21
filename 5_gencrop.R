@@ -7,7 +7,7 @@ p <- ggplot(GC, aes(x=fo_kg_ha, y=ghg_ha, size=arable_ha, colour=crop_specialisa
   theme_bw() + 
   scale_size(range = c(0.1, 5), name="Arable Area (Prop.)")
 p + xlab("Product (kg/ha)") + ylab("Gross emissions (co2eq kg/ha)")   
-ggsave("GC_total_ghg.png") 
+ggsave("GC_total_ghg.png",path="Figures") 
 
 
 par(mfrow=c(1,1))
@@ -22,14 +22,14 @@ kmeansRes<-factor(km$cluster)
 km$centers
 km$size
 s.class(df2,fac=kmeansRes, add.plot=TRUE, col=rainbow(nlevels(kmeansRes)))  #should print out the clustergram
-ggsave("gc_cluster_3plot.png")
+ggsave("gc_cluster_3plot.png",path="Figures")
 
 GC$cluster <- km$cluster
 table(GC$cluster)
 
 #Descriptives across Clusters
 
-png("GC_sclusterbyghg.png")
+png("Figures/GC_sclusterbyghg.png")
 par(mfrow=c(1,4))
 boxplot(tde_ha~cluster,data=GC, main="Direct/Ha",
         col=(c("darkslategrey")),
@@ -46,7 +46,7 @@ boxplot(tn20_ha~cluster,data=GC, main="NOx/Ha",
 dev.off()
 dev.off()
 
-png("GC_cluster_box.png")
+png("Figures/GC_cluster_box.png")
 par(mfrow=c(1,2))
 boxplot(ghg_ha~cluster,data=GC, main="Gross emissions/Ha",
         col=(c("darkslategrey")),
@@ -131,17 +131,17 @@ write.csv(GC, file="GC_All_Clustered.csv")
 ggplot(GC, aes(x=fo_kg_ha, y=nue_p, size = fa_aaua)) +
   geom_point(alpha=0.5) + 
   scale_size(range = c(0.1, 5), name="Adjusted Area")
-ggsave("GC_nue_product.png")  
+ggsave("GC_nue_product.png",path="Figures")  
 
 ggplot(GC, aes(x=op_ha, y=nue_p, size = fa_aaua)) +
   geom_point(alpha=0.5) + 
   scale_size(range = c(0.1, 5), name="Adjusted Area")
-ggsave("GC_nue_opprof.png") 
+ggsave("GC_nue_opprof.png",path="Figures") 
 
 ggplot(GC, aes(x=ghg_ha, y=nue_p, size = fa_aaua)) +
   geom_point(alpha=0.5) + 
   scale_size(range = c(0.1, 5), name="Adjusted Area")
-ggsave("GC_nue_ghg.png") 
+ggsave("GC_nue_ghg.png",path="Figures") 
 
 write.csv(GC, file="GC_All_Clustered.csv")
 
