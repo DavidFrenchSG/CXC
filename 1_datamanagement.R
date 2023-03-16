@@ -10,10 +10,11 @@
 #data management and input file - do this first and then farm types can be done in any order
 
 ##Manual inputs
-Curr_year <- 2020 # This is the *crop year* being studied
+Curr_year <- 2021 # This is the *crop year* being studied
 Prev_year <- Curr_year-1  # Calculates previous year for QA analysis
-Carbon_audit_dataset_location <- "CSV_Input/CA_test_dataset.csv" # Change to name of input dataset from carbon audit
-NUE_dataset_location <- "CSV_Input/NUE_test_dataset.csv" # Change to name of input dataset from nitrogen use efficiency
+Carbon_audit_dataset_location <- "CSV_Input/Farm Business Survey 2021-22 - Carbon Audit - Dataset.csv" # Change to name of input dataset from carbon audit
+NUE_dataset_location <- "CSV_Input/NUE2021_Data_NoOrganic.csv" # Change to name of input dataset from nitrogen use efficiency
+NUE_prevyear <- "CSV_Input/NUE2020_Data_NoOrganic.csv"
 
 
 # Imported data as csv into stata - use strict binding and all variables set to lower case
@@ -41,9 +42,15 @@ library(ade4) #  used to show cluster plots
 CA_test <- read.csv(Carbon_audit_dataset_location)
 colnames(CA_test) <- gsub(" ","",colnames(CA_test))
 colnames(CA_test) <- gsub("\\.","",colnames(CA_test))
-NUE_test <-read.csv(NUE_dataset_location)
+NUE_test <- read.csv(NUE_dataset_location)
+names(NUE_test) <- tolower(names(NUE_test))
+NUE_prev <- read.csv(NUE_prevyear)
+names(NUE_prev) <- tolower(names(NUE_prev))
+NUE_test <- NUE_test %>% 
+ rbind(NUE_prev)
 colnames(NUE_test) <- gsub(" ","",colnames(NUE_test))
 colnames(NUE_test) <- gsub("\\.","",colnames(NUE_test))
+names(NUE_test) <- toupper(names(NUE_test))
 NUE_test <- NUE_test %>% 
   mutate(NUE=as.character(NUE)) %>% 
   mutate(FARM_N_SURPLUS=as.numeric(gsub(",","",as.character(FARM_N_SURPLUS)))) %>% 
@@ -61,7 +68,18 @@ NUE_test <- NUE_test %>%
 NUE_test <-NUE_test %>% filter(AN_CODE=="NNKG")
 names(CA_test) <- tolower(names(CA_test))
 names(NUE_test) <- tolower(names(NUE_test))
-CA <- CA_test %>%  full_join(NUE_test,by="fa_id")
+CA <- CA_test %>%  
+  left_join(NUE_test,by="fa_id")
+
+# bring in FBS weights
+
+
+weights_file <- '//s0177a/sasdata1/ags/fas/new_weights.sas7bdat'
+weights <- read_sas(weights_file)
+names(weights) <- tolower(names(weights))
+for (x in colnames(weights)){
+  attr(weights[[deparse(as.name(x))]],"format.sas")=NULL
+}
 
 #table(CA$ys_year)
 ##wipes 2019 data
@@ -109,7 +127,7 @@ CA <- CA %>%
   mutate (arable_ha =  ((aoc+aop+aosr+aocc)/(fa_aaua))) %>%
   mutate (fodder_ha =  (aofc/fa_aaua)) %>%
   mutate (grass_ha = (agr/fa_aaua))%>%   #though same as rg in the file
-  mutate (rough_grazing_ha =  ((rough_grazing/fa_aaua)))
+  mutate (rough_grazing_ha =  ((arg/fa_aaua)))
 
 #indicator: main product by ha```
 CA <- CA %>%
@@ -222,6 +240,9 @@ table(CA$nftype)
 
 CA$Type <- CA$nftype
 
+#Join weights column to CA dataset
+CA <- CA %>% 
+  left_join(weights, by="fa_id")
 
 
 #Figure 1 main plot by kg and ghg scatter```
@@ -237,10 +258,18 @@ ggsave("Figure_1_total_ghg_scatter.png",path="Figures")
 p <- ggplot(CA, aes(x=Type, y=ghg_ha, fill=Type)) +
   geom_boxplot()  +
   theme_bw() + 
-  ylab("Gross emissions (co2eq.kg/ha)")    
+  ylab("Gross emissions (co2eq.kg/ha)") +
+  ggtitle("Unweighted")
 p
 ggsave("Figure_2_total_ghgha.png",path="Figures")
 
+#weighted Fig 2
+p <- ggplot(CA, aes(x=Type, y=ghg_ha, fill=Type, weight=fbswt)) +
+  geom_boxplot()  +
+  theme_bw() + 
+  ylab("Gross emissions (co2eq.kg/ha)")+
+  ggtitle("Weighted")
+p
 #Figure 2b(GHG TOTAL Boxplots by farm type farm environmental indicators```
 p <- ggplot(CA, aes(x=Type, y=ghg_CO2e, fill=Type)) +
   geom_boxplot()  +
@@ -255,12 +284,32 @@ ggsave("Figure_2b_total_ghg.png",path="Figures")
 
 Fig3 <- CA %>% 
   group_by(Type) %>% 
-  summarize(count=n(),direct=sum(total_de),indirect=sum(total_ie),methane=sum(total_me),nitrous=sum(total_no))
+  summarize(count=n(), 
+            direct=sum(total_de), 
+            indirect=sum(total_ie), 
+            methane=sum(total_me), 
+            nitrous=sum(total_no))
+Fig3_wt <- CA %>% 
+  group_by(Type) %>% 
+  summarize(count=sum(fbswt), 
+            direct=sum(fbswt*total_de), 
+            indirect=sum(fbswt*total_ie), 
+            methane=sum(fbswt*total_me), 
+            nitrous=sum(fbswt*total_no))
 Fig3a <- Fig3 %>% 
+  gather('nitrous', 'methane','indirect','direct',key="Emission_type",value="Emissions")
+Fig3a_wt <- Fig3_wt %>% 
   gather('nitrous', 'methane','indirect','direct',key="Emission_type",value="Emissions")
 
 p <- ggplot(Fig3a, aes(x=Type,y=Emissions,fill=Emission_type)) +
-  geom_col(position="fill")
+  geom_col(position="fill")+
+  ggtitle("Unweighted")
+p + xlab("Farm type") + ylab("Fraction of emissions")
+
+#Fig 3, but weighted
+p <- ggplot(Fig3a_wt, aes(x=Type,y=Emissions,fill=Emission_type)) +
+  geom_col(position="fill")+
+  ggtitle("Weighted")
 p + xlab("Farm type") + ylab("Fraction of emissions")
 
 ###Year-on-year QA
@@ -273,11 +322,11 @@ source("Carbon_audit_QA.R")
 
 ##runs the R code for each farm type - needs to have all files in same project
 ##note you have no control on the numbering of the clusters running in batch
-source("2_drystock_LFAonly.R")
-source("3_cereals.R")
-source("4_dairy.R")
-source("5_gencrop.R")
-source("6_mixed.R")
+# source("2_drystock_LFAonly.R")
+# source("3_cereals.R")
+# source("4_dairy.R")
+# source("5_gencrop.R")
+# source("6_mixed.R")
 
 
 
