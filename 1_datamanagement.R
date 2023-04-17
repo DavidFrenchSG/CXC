@@ -1,4 +1,4 @@
-
+library(data.table)
 
 #title: "Economic and Environmental Indicators - Descriptive File"
 #author: "Andrew Barnes"
@@ -16,6 +16,16 @@ Carbon_audit_dataset_location <- "CSV_Input/Farm Business Survey 2021-22 - Carbo
 NUE_dataset_location <- "CSV_Input/NUE2021_Data_NoOrganic.csv" # Change to name of input dataset from nitrogen use efficiency
 NUE_prevyear <- "CSV_Input/NUE2020_Data_NoOrganic.csv"
 
+#Variables for farmtype names and numbering
+fbs_type_numbers <- c(1:9)
+fbs_type_words <- c("Cereals","General Cropping","Dairy","LFA Sheep","LFA Cattle","LFA Cattle and Sheep","Lowland Livestock","Mixed","All farm types")
+fbs_type_tab <- data.frame(fbs_type_numbers, fbs_type_words)
+#Function to apply name formats for farm types
+apply_type_formats <- function(table_name) {
+  setkey(setDT(table_name),fbs_type)
+  table_name[setDT(fbs_type_tab),Type:=i.fbs_type_words]
+  return(table_name)
+}
 
 # Imported data as csv into stata - use strict binding and all variables set to lower case
 # Used stata to merge FBS with NUE and KGoutput files
@@ -36,6 +46,8 @@ library(tidyverse)
 library(ggplot2) # Library used to create graphs
 library(psych) # just for tables
 library(ade4) #  used to show cluster plots
+library(spatstat)
+# library(plyr)
 
 #names(CA)
 #DF - testing creating Input dataset
@@ -47,7 +59,7 @@ names(NUE_test) <- tolower(names(NUE_test))
 NUE_prev <- read.csv(NUE_prevyear)
 names(NUE_prev) <- tolower(names(NUE_prev))
 NUE_test <- NUE_test %>% 
- rbind(NUE_prev)
+  rbind(NUE_prev)
 colnames(NUE_test) <- gsub(" ","",colnames(NUE_test))
 colnames(NUE_test) <- gsub("\\.","",colnames(NUE_test))
 names(NUE_test) <- toupper(names(NUE_test))
@@ -238,8 +250,8 @@ CA$nftype <- factor(CA$ob)
 
 table(CA$nftype)
 
-CA$Type <- CA$nftype
-
+CA$fbs_type <- CA$type
+CA <- apply_type_formats(CA)
 #Join weights column to CA dataset
 CA <- CA %>% 
   left_join(weights, by="fa_id")
@@ -271,11 +283,12 @@ p <- ggplot(CA, aes(x=Type, y=ghg_ha, fill=Type, weight=fbswt)) +
   ggtitle("Weighted")
 p
 #Figure 2b(GHG TOTAL Boxplots by farm type farm environmental indicators```
-p <- ggplot(CA, aes(x=Type, y=ghg_CO2e, fill=Type)) +
+p <- ggplot(CA, aes(x=Type, y=ghg_CO2e, fill=Type, weight=fbswt)) +
   geom_boxplot()  +
   theme(axis.text.x=element_blank()) +
   theme_bw() + 
-  scale_y_continuous(name="Gross emissions (co2eq.kg)", labels = scales::comma)
+  scale_y_continuous(name="Gross emissions (co2eq.kg)", labels = scales::comma)+
+  ggtitle("Weighted")
 p
 ggsave("Figure_2b_total_ghg.png",path="Figures")
 
@@ -312,8 +325,25 @@ p <- ggplot(Fig3a_wt, aes(x=Type,y=Emissions,fill=Emission_type)) +
   ggtitle("Weighted")
 p + xlab("Farm type") + ylab("Fraction of emissions")
 
+
+
+weighted_table <- CA %>% 
+  group_by(Type) %>% 
+  summarise(Weighted_median=weighted.median(ghg_ha, fbswt),
+            Unweighted_median=median(ghg_ha),
+            Weighted_mean=weighted.mean(ghg_ha,fbswt),
+            Unweighted_mean=mean(ghg_ha),
+            Weighted_75pc = weighted.quantile(ghg_ha,fbswt,0.75),
+            Unweighted_75pc = quantile(ghg_ha,0.75),
+            Weighted_25pc = weighted.quantile(ghg_ha,fbswt,0.25),
+            Unweighted_25pc = quantile(ghg_ha,0.25)
+            )
+weighted_table <- weighted_table %>% 
+  mutate(Weighted_IQR = Weighted_75pc - Weighted_25pc,
+         Unweighted_IQR = Unweighted_75pc-Unweighted_25pc)
+
 ###Year-on-year QA
-source("Carbon_audit_QA.R")
+# source("Carbon_audit_QA.R")
 
 
 
