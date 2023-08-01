@@ -99,3 +99,29 @@ p <- ggplot(BothYears, aes(x=as.factor(ys_year), y=ghg_ha, fill=as.factor(ys_yea
   facet_wrap(~ Type,scales="free_x")    
 p
 ggsave("Figure_2_total_ghgha_both_years_matched_type.png",path="QA")
+
+
+
+#Testing code to look at correlations between financial and environmental variables
+aes_now <- function(...) {
+  structure(list(...),  class = "uneval")
+}
+fin_env_plot <- function(x_var, y_var) {
+  x_var <- sym(x_var)
+  y_var <- sym(y_var)
+  p <- ggplot(BothYearsAllFarms, aes(x=!!x_var, y=!!y_var)) +
+    geom_point() + 
+    geom_smooth(method="lm")+
+    facet_wrap(~ Type, scales = "free")
+  p
+}
+
+fin_env_plot("fa_cinc", "ghg_ha")
+fin_env_plot("out_inp", "ghg_ha")
+fin_env_plot("fbi", "ghg_kgout")
+fin_env_plot("fbi", "ghg_ha")
+fin_env_plot("out_inp", "nue")
+fin_env_plot("fa_cinc", "farm_n_surplus")
+
+check <- CA_test %>% 
+  select(fa_id, fa_cinc)

@@ -12,7 +12,7 @@ library(data.table)
 ##Manual inputs
 Curr_year <- 2021 # This is the *crop year* being studied
 Prev_year <- Curr_year-1  # Calculates previous year for QA analysis
-Carbon_audit_dataset_location <- "CSV_Input/Farm Business Survey 2021-22 - Carbon Audit - Dataset.csv" # Change to name of input dataset from carbon audit
+Carbon_audit_dataset_location <- "CSV_Input/CA_test_dataset.csv" # Change to name of input dataset from carbon audit
 NUE_dataset_location <- "CSV_Input/NUE2021_Data_NoOrganic.csv" # Change to name of input dataset from nitrogen use efficiency
 NUE_prevyear <- "CSV_Input/NUE2020_Data_NoOrganic.csv"
 
