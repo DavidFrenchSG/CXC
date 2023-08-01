@@ -122,6 +122,3 @@ fin_env_plot("fbi", "ghg_kgout")
 fin_env_plot("fbi", "ghg_ha")
 fin_env_plot("out_inp", "nue")
 fin_env_plot("fa_cinc", "farm_n_surplus")
-
-check <- CA_test %>% 
-  select(fa_id, fa_cinc)
