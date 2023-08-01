@@ -198,7 +198,7 @@ CA <- CA %>%
 
 CA <- CA %>%
   mutate (lu_ha = fa_glu / fa_aaua) %>%   
-  mutate(slr_ha = averagessizeofbusiness / fa_aaua)%>%
+  # mutate(slr_ha = averagessizeofbusiness / fa_aaua)%>%
   mutate(eff_area = fa_aaua /(fa_aaua+afwl+aowl))  # effective area is farm area 
 
 #nitrogen use efficiency - from SAC report```
